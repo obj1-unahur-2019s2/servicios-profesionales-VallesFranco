@@ -1,0 +1,45 @@
+import universidades.*
+import profesionales.*
+import empresas.*
+
+describe "Tests de la etapa 1" {
+	var uniDeSanMartin = new Universidad (provincia = "Buenos Aires",honorariosXHora = 3500)
+	var uniDeRosario = new Universidad (provincia = "Santa Fe",honorariosXHora = 2800)
+	var uniDeCorrientes = new Universidad (provincia = "Corrientes",honorariosXHora = 4200)
+	var uniDeHur = new Universidad (provincia = "Buenos Aires",honorariosXHora = 8800)
+	
+	var juana = new ProfesionalVinculado (universidad = uniDeRosario)
+	var melina = new ProfesionalAsociado (universidad = uniDeCorrientes)
+	var rocio = new ProfesionalLibre (universidad = uniDeHur,
+										hriosXHora = 5000,
+										provinciasDondeTrabaja = #{"Santa Fe","Córdoba","Buenos Aires"}
+											)
+	var luciana = new ProfesionalLibre (universidad = uniDeRosario,
+											hriosXHora = 3200,
+											provinciasDondeTrabaja = #{"Santa Fe","Entre Ríos"}
+												)										
+	
+	var donPepeYLosGlobos = new EmpresaDeServicios (proContratados = #{juana,melina,rocio,luciana},
+														hriosXProfesional = 3500)
+	
+	test "Estudios de los profesionales" {
+		assert.equals(2,donPepeYLosGlobos.profesionalesConEstudiosEn(uniDeRosario))
+		assert.equals(1,donPepeYLosGlobos.profesionalesConEstudiosEn(uniDeHur))
+		assert.notEquals(1,donPepeYLosGlobos.profesionalesConEstudiosEn(uniDeSanMartin))
+	}
+	test "Profesionales caros" {
+		assert.equals(#{rocio},donPepeYLosGlobos.profesionalesCaros())
+		assert.notEquals(#{melina},donPepeYLosGlobos.profesionalesCaros())
+	}
+	test "Universidades formadoras" {
+		assert.equals(#{uniDeRosario,uniDeCorrientes,uniDeHur},donPepeYLosGlobos.universidadesFormadoras())
+		assert.notEquals(#{uniDeSanMartin},donPepeYLosGlobos.universidadesFormadoras())
+	}
+	test "Profesionales baratos" {
+		assert.equals(juana,donPepeYLosGlobos.profesionalMasBarato())
+		assert.notEquals(rocio,donPepeYLosGlobos.profesionalMasBarato())
+	}
+	test "Es de gente acotada?" {
+		assert.that(donPepeYLosGlobos.esDeGenteAcotada())
+	}	
+}
